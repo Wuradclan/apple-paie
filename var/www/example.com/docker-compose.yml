@@ -1,0 +1,42 @@
+version: '2'
+
+services:
+  example_db:
+    image: mysql:5.7
+    container_name: example_db
+    volumes:
+      - ./database/data:/var/lib/mysql
+      - ./database/initdb.d:/docker-entrypoint-initdb.d
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: aieububsnlVUOBWHLEINA # any random string will do
+      MYSQL_DATABASE: applipaie # the name of your mysql database
+      MYSQL_USER: example_db_user # the name of the database user
+      MYSQL_PASSWORD: example_db_password # the password of the mysql user
+
+  example:
+    depends_on:
+      - example_db
+    image: wordpress:php7.1 # we're using the image with php7.1 
+    container_name: example
+    ports:
+      - "8080:80"
+    restart: always
+    links:
+      - example_db:mysql
+    volumes:
+      - ./src:/var/www/html
+
+  phpmyadmin:
+    depends_on:
+      - example_db
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: example_db_user
+      PMA_PASSWORD: example_db_password
+    links:
+      - example_db:mysql
+    ports:
+      - "1234:80"
