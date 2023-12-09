@@ -20,7 +20,7 @@ services:
     image: wordpress:php7.1 # we're using the image with php7.1 
     container_name: example
     ports:
-      - "8080:80"
+      - "80:80"
     restart: always
     links:
       - example_db:mysql
@@ -39,4 +39,4 @@ services:
     links:
       - example_db:mysql
     ports:
-      - "1234:80"
+      - "8080:80"
